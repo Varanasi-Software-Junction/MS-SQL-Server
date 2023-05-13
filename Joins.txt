@@ -1,0 +1,145 @@
+Table: Customers
+
+CustomerID	CustomerName
+1	John
+2	Sarah
+3	Michael
+Table: Orders
+
+OrderID	CustomerID	OrderDate
+1	1	2023-05-10
+2	2	2023-05-11
+3	1	2023-05-12
+4	3	2023-05-12
+
+
+
+
+SELECT *
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+
+
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+3	Michael	4	3	2023-05-12
+
+
+
+SELECT *
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+
+
+
+
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+3	Michael	4	3	2023-05-12
+
+
+
+SELECT *
+FROM Customers
+RIGHT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+
+
+
+
+Certainly! Let's assume we have two tables, Customers and Orders, with the following structures and sample data:
+
+Table: Customers
+
+CustomerID	CustomerName
+1	John
+2	Sarah
+3	Michael
+Table: Orders
+
+OrderID	CustomerID	OrderDate
+1	1	2023-05-10
+2	2	2023-05-11
+3	1	2023-05-12
+4	3	2023-05-12
+Now, let's see the sample output for each join type:
+
+INNER JOIN:
+sql
+Copy code
+SELECT *
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+Sample Output:
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+3	Michael	4	3	2023-05-12
+The INNER JOIN only returns the rows where the CustomerID exists in both the Customers and Orders tables. It matches the rows based on the join condition Customers.CustomerID = Orders.CustomerID.
+
+LEFT JOIN:
+sql
+Copy code
+SELECT *
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+Sample Output:
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+3	Michael	4	3	2023-05-12
+The LEFT JOIN returns all the rows from the left table (Customers) and the matching rows from the right table (Orders). If there are no matches, NULL values are returned for the right table.
+
+
+SELECT *
+FROM Customers
+RIGHT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+Sample Output:
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+NULL	NULL	4	3	2023-05-12
+
+
+SELECT *
+FROM Customers
+FULL JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+
+
+
+
+CustomerID	CustomerName	OrderID	CustomerID	OrderDate
+1	John	1	1	2023-05-10
+1	John	3	1	2023-05-12
+2	Sarah	2	2	2023-05-11
+3	Michael	4	3	2023-05-12
+NULL	NULL	NULL	NULL	NULL
+
+
+SELECT *
+FROM Table1
+CROSS JOIN Table2;
+
+
+Assuming Table1 has two rows and Table2 has three rows, the CROSS JOIN will generate six rows, as it combines each row from Table1 with every row from Table2.
+
+Table1 Column1	Table1 Column2	Table2 Column1	Table2 Column2
+Row 1 Value 1	Row 1 Value 2	Row 1 Value 1	Row 1 Value 2
+Row 1 Value 1	Row 1 Value 2	Row 2 Value 1	Row 2 Value 2
+Row 1 Value 1	Row 1 Value 2	Row 3 Value 1	Row 3 Value 2
+Row 2 Value 1	Row 2 Value 2	Row 1 Value 1	Row 1 Value 2
+Row 2 Value 1	Row 2 Value 2	Row 2 Value 1	Row 2 Value 2
+Row 2 Value 1	Row 2 Value 2	Row 3 Value 1	Row 3 Value 2
+
+
