@@ -143,3 +143,35 @@ Row 2 Value 1	Row 2 Value 2	Row 2 Value 1	Row 2 Value 2
 Row 2 Value 1	Row 2 Value 2	Row 3 Value 1	Row 3 Value 2
 
 
+
+
+
+EmployeeID	EmployeeName	Position
+1	John	Manager
+2	Sarah	Developer
+3	Michael	Analyst
+Table: Departments
+
+DepartmentID	DepartmentName
+1	Sales
+2	IT
+3	Marketing
+
+
+
+SELECT *
+FROM Employees
+CROSS JOIN Departments;
+
+
+
+EmployeeID	EmployeeName	Position	DepartmentID	DepartmentName
+1	John	Manager	1	Sales
+1	John	Manager	2	IT
+1	John	Manager	3	Marketing
+2	Sarah	Developer	1	Sales
+2	Sarah	Developer	2	IT
+2	Sarah	Developer	3	Marketing
+3	Michael	Analyst	1	Sales
+3	Michael	Analyst	2	IT
+3	Michael	Analyst	3	Marketing
