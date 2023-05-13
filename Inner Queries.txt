@@ -1,0 +1,225 @@
+In SQL Server, inner queries, also known as subqueries, are queries that are embedded within the main query. They allow you to retrieve data from one or more tables based on specific conditions or criteria defined in the subquery. The result of the subquery is then used in the main query to further filter, join, or perform calculations on the data.
+
+Inner queries can be used in various parts of a SQL statement, including the SELECT, FROM, WHERE, and HAVING clauses. The syntax for an inner query is typically enclosed within parentheses and placed within the main query at the appropriate location.
+
+Here's a simple example to illustrate the concept of an inner query:
+
+
+SELECT column1, column2
+FROM table1
+WHERE column1 IN (SELECT column1 FROM table2 WHERE condition)
+
+
+In this example, the inner query (SELECT column1 FROM table2 WHERE condition) retrieves a list of values from table2 based on the specified condition. The result of the inner query (a set of values from column1) is then used in the outer query to filter rows from table1 where column1 matches any of the values obtained from the inner query.
+
+Inner queries can also be used in other scenarios, such as joining tables or calculating aggregate values. Here's an example that demonstrates using an inner query for calculating an average value:
+
+
+SELECT column1, (SELECT AVG(column2) FROM table2) AS average_value
+FROM table1
+
+
+SELECT column1, (SELECT AVG(column2) FROM table2) AS average_value
+FROM table1
+
+
+In this case, the inner query (SELECT AVG(column2) FROM table2) calculates the average value of column2 from table2. The result of the inner query is then used in the main query to display the average value alongside each row of table1.
+
+Examples
+
+Suppose you are a manager at a retail store chain and you want to identify customers who have made multiple purchases within a specific time period. You have two tables in your SQL Server database: Customers and Purchases. The Customers table contains customer information, including their unique IDs, names, and contact details. The Purchases table contains purchase records, including the customer ID, purchase date, and the total amount spent.
+
+You can use an inner query to retrieve the names of customers who have made multiple purchases within the last month. Here's an example query:
+
+
+-- Create the Customers table
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Phone VARCHAR(20)
+);
+
+-- Create the Purchases table
+CREATE TABLE Purchases (
+    PurchaseID INT PRIMARY KEY,
+    CustomerID INT,
+    PurchaseDate DATE,
+    Amount DECIMAL(10, 2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Insert sample data into the Customers table
+INSERT INTO Customers (CustomerID, Name, Email, Phone)
+VALUES
+    (1, 'Amit Patel', 'amit@example.com', '123-456-7890'),
+    (2, 'Priya Sharma', 'priya@example.com', '987-654-3210'),
+    (3, 'Rahul Desai', 'rahul@example.com', '555-123-4567');
+
+-- Insert sample data into the Purchases table
+INSERT INTO Purchases (PurchaseID, CustomerID, PurchaseDate, Amount)
+VALUES
+    (1, 1, '2023-05-01', 100.50),
+    (2, 2, '2023-05-02', 75.20),
+    (3, 1, '2023-05-04', 50.00),
+    (4, 3, '2023-05-05', 120.80),
+    (5, 1, '2023-05-10', 80.60),
+    (6, 2, '2023-05-12', 65.30);
+
+
+SELECT Name
+FROM Customers
+WHERE CustomerID IN (
+    SELECT CustomerID
+    FROM Purchases
+    WHERE PurchaseDate >= DATEADD(MONTH, -1, GETDATE())
+    GROUP BY CustomerID
+    HAVING COUNT(*) > 1
+)
+
+
+
+
+
+
+
+SELECT * FROM Customers;
+
+CustomerID | Name           | Email              | Phone       
+----------------------------------------------------------
+1          | Amit Patel     | amit@example.com   | 123-456-7890
+2          | Priya Sharma   | priya@example.com  | 987-654-3210
+3          | Rahul Desai    | rahul@example.com  | 555-123-4567
+
+
+SELECT * FROM Purchases;
+
+
+PurchaseID | CustomerID | PurchaseDate | Amount
+----------------------------------------------
+1          | 1          | 2023-05-01   | 100.50
+2          | 2          | 2023-05-02   | 75.20
+3          | 1          | 2023-05-04   | 50.00
+4          | 3          | 2023-05-05   | 120.80
+5          | 1          | 2023-05-10   | 80.60
+6          | 2          | 2023-05-12   | 65.30
+
+SELECT Name
+FROM Customers
+WHERE CustomerID IN (
+    SELECT CustomerID
+    FROM Purchases
+    WHERE PurchaseDate >= DATEADD(MONTH, -1, GETDATE())
+    GROUP BY CustomerID
+    HAVING COUNT(*) > 1
+)
+
+
+Name          
+--------------
+Amit Patel    
+Priya Sharma  
+
+
+
+
+SELECT c.Name, p.PurchaseDate, p.Amount
+FROM Customers c
+INNER JOIN Purchases p ON c.CustomerID = p.CustomerID
+WHERE p.PurchaseDate >= DATEADD(MONTH, -1, GETDATE());
+
+
+
+Name          | PurchaseDate | Amount
+------------------------------------
+Amit Patel    | 2023-05-01   | 100.50
+Priya Sharma  | 2023-05-02   | 75.20
+Amit Patel    | 2023-05-04   | 50.00
+Rahul Desai   | 2023-05-05   | 120.80
+Amit Patel    | 2023-05-10   | 80.60
+Priya Sharma  | 2023-05-12   | 65.30
+
+
+
+
+two tables: Employees and Salaries. The Employees table contains information about employees, including their unique IDs, names, and departments. The Salaries table contains salary records, including the employee ID, salary amount, and date.
+
+You want to find the names of employees who have the highest salary in their respective departments. Here's the query:
+
+
+
+SELECT e.Name, e.Department
+FROM Employees e
+WHERE e.EmployeeID IN (
+    SELECT s.EmployeeID
+    FROM Salaries s
+    INNER JOIN (
+        SELECT Department, MAX(Salary) AS MaxSalary
+        FROM Salaries
+        GROUP BY Department
+    ) maxsal ON s.Department = maxsal.Department AND s.Salary = maxsal.MaxSalary
+);
+
+
+
+-- Assignment 1
+-- Retrieve the Names of Customers with Orders Placed in the Last Week
+
+SELECT Name
+FROM Customers
+WHERE CustomerID IN (
+    SELECT CustomerID
+    FROM Orders
+    WHERE OrderDate >= DATEADD(WEEK, -1, GETDATE())
+);
+
+
+
+-- Assignment 2
+-- Find the Departments with the Highest Average Salary
+
+SELECT Department
+FROM Employees
+WHERE Salary > (
+    SELECT AVG(Salary)
+    FROM Employees
+    GROUP BY Department
+);
+
+
+
+-- Assignment 3
+-- List the Products with a Quantity Less than the Average Quantity Sold
+
+SELECT ProductName
+FROM Products
+WHERE Quantity < (
+    SELECT AVG(Quantity)
+    FROM OrderDetails
+);
+
+
+-- Assignment 4
+-- Calculate the Total Sales for Each Customer
+
+SELECT CustomerID, (
+    SELECT SUM(TotalPrice)
+    FROM Orders
+    WHERE CustomerID = c.CustomerID
+) AS TotalSales
+FROM Customers c;
+
+
+
+-- Assignment 5
+-- Determine the Customers Who Have Not Made Any Purchases
+
+SELECT Name
+FROM Customers
+WHERE CustomerID NOT IN (
+    SELECT CustomerID
+    FROM Purchases
+);
+
+
+
